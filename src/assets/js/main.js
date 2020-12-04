@@ -18,14 +18,16 @@ saveBandwidthUrlParam = saveBandwidthUrlParam || USE_TARGET_QUALITY;
 
 // list at https://docs.google.com/spreadsheets/d/1ye7s3e73o2-iuDJ1iTu71qfHuN21BjNBqU4aY-Tmk6c/edit?usp=sharing
 let config = {
-    primary: "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_PRIMARY ? QUERY_PRIMARY : ""),
-    secondaries: [
-        "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : ""),
-        "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : ""),
-        "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : "")
-    ],
+    // primary: "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_PRIMARY ? QUERY_PRIMARY : ""),
+    // secondaries: [
+    //     "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : ""),
+    //     "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : ""),
+    //     "https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8" + (QUERY_SECONDARY ? QUERY_SECONDARY : "")
+    // ],
     saveBandwidth: saveBandwidthUrlParam
 };
+
+let secondaryTitles = [];
 
 console.log("Visit", window.location.href, "for fullscreen.\n");
 
@@ -41,6 +43,7 @@ function createPlayer(selector, muted, index) {
     });
     // player.abr.strategy = {type: 'performance'};
     player.muted = muted;
+    player.autoplay = true;
     createLogButton(player);
     createMultiButton(player);
     createGridButton(player);
@@ -206,6 +209,7 @@ function registerEventsForPlayer(player, index) {
 var MultiCamPlayers = (function() {
     return {
         createPlayers: function(input_config) {
+            secondaryTitles = input_config.secondaryTitles;
             createPlayers(input_config.primary, input_config.secondaries, {
                 saveBandwidth: config.saveBandwidth
             });
@@ -424,6 +428,12 @@ function saveBandwidth() {
 function createSecondaryPlayers(number) {
     var secondaryDiv = document.createElement("div");
     secondaryDiv.setAttribute("id", "secondary");
+    // creating close section 
+    var multiCamCloseSection = document.createElement("div");
+    multiCamCloseSection.setAttribute("class", "multiCamSection");
+    multiCamCloseSection.innerHTML = "<div class=\"multiClose\" onclick=\"closeListView();\">X</div><h4>More camera angles</h4>";
+    secondaryDiv.appendChild(multiCamCloseSection);
+
     document.querySelector("#container-1").appendChild(secondaryDiv);
     for (var i = 2; i < number + 1; i++) {
         var secondaryContainer = document.createElement("div");
@@ -437,12 +447,13 @@ function createSecondaryPlayers(number) {
         // add camera
         var cameraElement = document.createElement("div");
         cameraElement.className = "camera";
-        let innerText = "Alt 1";
-        if (i == 3) {
-            innerText = "Alt 2";
-        } else if (i == 4) {
-            innerText = "360";
-        }
+        let innerText = secondaryTitles[i - 2];
+        // let innerText = "Alt 1";
+        // if (i == 3) {
+        //     innerText = "Alt 2";
+        // } else if (i == 4) {
+        //     innerText = "360";
+        // }
         // cameraElement.innerText = String.fromCharCode(96 + i).toUpperCase();
         cameraElement.innerText = innerText;
         element.appendChild(cameraElement);
@@ -615,7 +626,7 @@ function createMultiButton(player) {
             }
         },
         buildCSSClass: function() {
-            return "fa fa-window-restore custom-info-icon vjs-control vjs-button"; // insert all class names here
+            return "fa fa-window-restore custom-info-icon vjs-control vjs-button theoListBtn"; // insert all class names here
         }
     });
 
@@ -651,7 +662,7 @@ function createGridButton(player) {
             }
         },
         buildCSSClass: function() {
-            return "fa fa-th-large custom-info-icon vjs-control vjs-button"; // insert all class names here
+            return "fa fa-th-large custom-info-icon vjs-control vjs-button theoGridBtn"; // insert all class names here
         }
     });
 
@@ -735,4 +746,8 @@ function potentiallyResumeAllPlayers(index) {
             });
         }
     }
+}
+
+function closeListView() {
+    document.querySelector("#container-1").classList.toggle("multicam-off");
 }

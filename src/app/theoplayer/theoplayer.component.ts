@@ -24,6 +24,11 @@ export class TheoplayerComponent implements OnInit, AfterViewInit {
            (TheoplayerComponent.QUERY_SECONDARY ? TheoplayerComponent.QUERY_SECONDARY : ''),
           'https://content.uplynk.com/044b9f180b4249f88b02231f13110239.m3u8' +
            (TheoplayerComponent.QUERY_SECONDARY ? TheoplayerComponent.QUERY_SECONDARY : '')
+      ],
+      secondaryTitles: [
+        'Cam 1',
+        'Cam 2',
+        'Cam 3'
       ]
     };
   }

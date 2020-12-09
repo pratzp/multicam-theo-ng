@@ -549,7 +549,7 @@ function getHHMMSS(date) {
 function getQuality(player) {
   if (player.videoTracks[0] && player.videoTracks[0].activeQuality) {
     return (
-      player.videoTracks[0].activeQuality.width +
+      player.videoTracks[0].activeQuality.height +
       "x" +
       player.videoTracks[0].activeQuality.width
     );
@@ -774,9 +774,9 @@ function stop404SegmentsForIndex(index) {
 
 function potentiallyHaltAllPlayers(index) {
   if (NO_PLAY_IF_MAIN_STUCK && index == 0) {
-    const primary = THEOplayer.players[0];
+    const primary = getPrimary();
     if (getStateForIndex(index) == "BUFFERING") {
-      const secondaries = THEOplayer.players.filter((p) => p.uid > 0);
+      const secondaries = getSecondaries();
       console.log("Should pause all...");
       secondaries.forEach((player) => {
         if (!player.paused) {
@@ -853,5 +853,6 @@ function changeAbr(player, min, max) {
 
 function resetAbr(player) {
   if (player && player.videoTracks && player.videoTracks[0]) {
+    player.videoTracks[0].targetQuality = null;
   }
 }

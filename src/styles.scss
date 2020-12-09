@@ -194,3 +194,8 @@ th {
 .grid .focus .expand-icon {
     display: block;
 }
+
+/* hide volume on supporting angles */
+.theoplayer-container.secondary .vjs-mute-control, .theoplayer-container.secondary .vjs-volume-control {
+    display: none;
+  }
